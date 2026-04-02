@@ -225,7 +225,7 @@ export default function App() {
             </p>
           </div>
 
-          <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
+          <div className="mobile-stack">
             <button className="primary-btn" onClick={() => setTab("trade")}>
               + Add Trade
             </button>
@@ -304,7 +304,7 @@ export default function App() {
           </div>
         </div>
 
-        <div style={{ display: "flex", gap: "10px", marginBottom: "20px", flexWrap: "wrap" }}>
+        <div className="mobile-stack" style={{ marginBottom: "20px" }}>
           <button className="primary-btn" onClick={() => setTab("trade")}>
             Trade
           </button>
