@@ -340,27 +340,6 @@ export default function App() {
           </div>
         </div>
 
-        <div className="tab-nav">
-          <button
-            className={tab === "trade" ? "tab-btn active-tab" : "tab-btn"}
-            onClick={() => setTab("trade")}
-          >
-            Trade
-          </button>
-          <button
-            className={tab === "daily" ? "tab-btn active-tab" : "tab-btn"}
-            onClick={() => setTab("daily")}
-          >
-            Daily
-          </button>
-          <button
-            className={tab === "balance" ? "tab-btn active-tab" : "tab-btn"}
-            onClick={() => setTab("balance")}
-          >
-            Balance
-          </button>
-        </div>
-
         {tab === "trade" && (
           <>
             <div className="section-block">
@@ -751,6 +730,7 @@ export default function App() {
 
               <div className="mobile-only">
                 <TradeCardsMobile />
+              
               </div>
             </div>
           </>
@@ -1015,7 +995,32 @@ export default function App() {
             </div>
           </>
         )}
-      </div>
-    </div>
+      </div>   // container 结束
+
+  <div className="bottom-nav">
+    <button
+      className={tab === "trade" ? "bottom-nav-item active" : "bottom-nav-item"}
+      onClick={() => setTab("trade")}
+    >
+      📈 Trade
+    </button>
+
+    <button
+      className={tab === "daily" ? "bottom-nav-item active" : "bottom-nav-item"}
+      onClick={() => setTab("daily")}
+    >
+      📅 Daily
+    </button>
+
+    <button
+      className={tab === "balance" ? "bottom-nav-item active" : "bottom-nav-item"}
+      onClick={() => setTab("balance")}
+    >
+      💰 Balance
+    </button>
+  </div>
+
+  </div>   // app-shell
   );
+  
 }
