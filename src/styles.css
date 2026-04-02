@@ -196,3 +196,10 @@ body,
     grid-template-columns: 1fr;
   }
 }
+.positive {
+  color: #22c55e;
+}
+
+.negative {
+  color: #ef4444;
+}
