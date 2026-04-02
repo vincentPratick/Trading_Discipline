@@ -995,6 +995,7 @@ export default function App() {
             </div>
           </>
         )}
+          </div>
        <div className="bottom-nav">
     <button
       className={tab === "trade" ? "bottom-nav-item active" : "bottom-nav-item"}
