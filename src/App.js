@@ -995,32 +995,31 @@ export default function App() {
             </div>
           </>
         )}
-      </div>   // container 结束
-
-  <div className="bottom-nav">
+       <div className="bottom-nav">
     <button
       className={tab === "trade" ? "bottom-nav-item active" : "bottom-nav-item"}
       onClick={() => setTab("trade")}
     >
-      📈 Trade
+      <span>📈</span>
+      <small>Trade</small>
     </button>
 
+    {/* 🔥 中间突出按钮 */}
     <button
-      className={tab === "daily" ? "bottom-nav-item active" : "bottom-nav-item"}
-      onClick={() => setTab("daily")}
+      className="bottom-nav-center"
+      onClick={() => setTab("trade")}
     >
-      📅 Daily
+      +
     </button>
 
     <button
       className={tab === "balance" ? "bottom-nav-item active" : "bottom-nav-item"}
       onClick={() => setTab("balance")}
     >
-      💰 Balance
+      <span>💰</span>
+      <small>Balance</small>
     </button>
   </div>
-
-  </div>   // app-shell
   );
   
 }
