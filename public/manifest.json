@@ -5,12 +5,12 @@
   {
     "src": "/trade.jpg",
     "sizes": "192x192",
-    "type": "image/png"
+    "type": "image/jpeg"
   },
   {
     "src": "/trade2.jpg",
     "sizes": "512x512",
-    "type": "image/png"
+    "type": "image/jpeg"
   }
 ]
   "start_url": "/",
