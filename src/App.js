@@ -316,296 +316,363 @@ export default function App() {
           </button>
         </div>
 
-        {tab === "trade" && (
-          <>
-            <div className="main-grid">
-              <div className="card">
-                <h2 className="section-title">Trade Entry</h2>
+       {tab === "trade" && (
+  <>
+    {/* Section 1: Account Overview */}
+    <div className="section-block">
+      <div className="section-header">
+        <h2 className="section-title">Account Overview</h2>
+        <p className="section-desc">Quick view of your account and performance.</p>
+      </div>
 
-                <div className="form-grid">
-                  <div className="input-group">
-                    <label className="label">Start Balance</label>
-                    <input
-                      className="input"
-                      value={startBalance}
-                      onChange={(e) => setStartBalance(e.target.value)}
-                    />
-                  </div>
+      <div className="stats-grid">
+        <div className="card">
+          <div className="stat-label">Current Balance</div>
+          <div
+            className={`stat-value ${pnlClass(
+              stats.currentBalance - Number(startBalance || 0)
+            )}`}
+          >
+            ${fmt2(stats.currentBalance)}
+          </div>
+        </div>
 
-                  <div className="input-group">
-                    <label className="label">Trade Date</label>
-                    <input
-                      className="input"
-                      type="date"
-                      value={normalizeDate(trade.date)}
-                      onChange={(e) =>
-                        setTrade({ ...trade, date: normalizeDate(e.target.value) })
-                      }
-                    />
-                  </div>
+        <div className="card">
+          <div className="stat-label">Today P/L</div>
+          <div className={`stat-value ${pnlClass(stats.todayPnl)}`}>
+            {stats.todayPnl > 0 ? "+" : ""}${fmt2(stats.todayPnl)}
+          </div>
+        </div>
 
-                  <div className="input-group">
-                    <label className="label">Pair</label>
-                    <input
-                      className="input"
-                      value={trade.pair}
-                      onChange={(e) => setTrade({ ...trade, pair: e.target.value })}
-                      placeholder="e.g. XAUUSD"
-                    />
-                  </div>
+        <div className="card">
+          <div className="stat-label">Win Rate</div>
+          <div
+            className={`stat-value ${
+              stats.winRate > 50 ? "positive" : stats.winRate < 50 ? "negative" : ""
+            }`}
+          >
+            {stats.winRate}%
+          </div>
+        </div>
 
-                  <div className="input-group">
-                    <label className="label">Direction</label>
-                    <select
-                      className="select"
-                      value={trade.direction}
-                      onChange={(e) =>
-                        setTrade({ ...trade, direction: e.target.value })
-                      }
-                    >
-                      <option>Buy</option>
-                      <option>Sell</option>
-                    </select>
-                  </div>
+        <div className="card">
+          <div className="stat-label">Discipline Score</div>
+          <div className={`stat-value ${canTrade ? "positive" : "negative"}`}>
+            {score}/10
+          </div>
+        </div>
+      </div>
+    </div>
 
-                  <div className="input-group full">
-                    <label className="label">Reason</label>
-                    <input
-                      className="input"
-                      value={trade.reason}
-                      onChange={(e) => setTrade({ ...trade, reason: e.target.value })}
-                      placeholder="Write the setup reason"
-                    />
-                  </div>
+    {/* Section 2: Setup Status */}
+    <div className="section-block">
+      <div className="section-header">
+        <h2 className="section-title">Setup Status</h2>
+        <p className="section-desc">Check whether this setup is ready or should be skipped.</p>
+      </div>
 
-                  <div className="input-group">
-                    <label className="label">Entry Price</label>
-                    <input
-                      className="input"
-                      value={trade.entry}
-                      onChange={(e) => setTrade({ ...trade, entry: e.target.value })}
-                      placeholder="e.g. 4624"
-                    />
-                  </div>
+      <div
+        className={`status-panel ${canTrade ? "status-ready" : "status-wait"}`}
+      >
+        <div className="status-main">
+          {canTrade ? "READY TO TRADE" : "WAIT / NO TRADE"}
+        </div>
+        <div className="status-sub">
+          Pair: {trade.pair} · Score: {score}/10 · Today P/L: ${fmt2(stats.todayPnl)}
+        </div>
+      </div>
+    </div>
 
-                  <div className="input-group">
-                    <label className="label">Stop Loss</label>
-                    <input
-                      className="input"
-                      value={trade.sl}
-                      onChange={(e) => setTrade({ ...trade, sl: e.target.value })}
-                      placeholder="e.g. 4630"
-                    />
-                  </div>
+    {/* Section 3: Trade Entry + Checklist */}
+    <div className="section-block">
+      <div className="section-header">
+        <h2 className="section-title">Trade Planning</h2>
+        <p className="section-desc">Plan the trade first, then confirm the checklist.</p>
+      </div>
 
-                  <div className="input-group">
-                    <label className="label">Take Profit</label>
-                    <input
-                      className="input"
-                      value={trade.tp}
-                      onChange={(e) => setTrade({ ...trade, tp: e.target.value })}
-                      placeholder="e.g. 4602"
-                    />
-                  </div>
+      <div className="main-grid">
+        <div className="card">
+          <h3 className="subsection-title">Trade Entry</h3>
 
-                  <div className="input-group">
-                    <label className="label">Risk %</label>
-                    <input
-                      className="input"
-                      value={trade.risk || ""}
-                      onChange={(e) => setTrade({ ...trade, risk: e.target.value })}
-                      placeholder="e.g. 2"
-                    />
-                  </div>
-
-                  <div className="input-group">
-                    <label className="label">PnL</label>
-                    <input
-                      className="input"
-                      value={trade.pnl}
-                      onChange={(e) => setTrade({ ...trade, pnl: e.target.value })}
-                      placeholder="e.g. 21.35"
-                    />
-                  </div>
-
-                  <div className="input-group">
-                    <label className="label">Result</label>
-                    <select
-                      className="select"
-                      value={trade.result}
-                      onChange={(e) => setTrade({ ...trade, result: e.target.value })}
-                    >
-                      <option>Win</option>
-                      <option>Loss</option>
-                      <option>BE</option>
-                    </select>
-                  </div>
-
-                  <div className="input-group full">
-                    <button className="primary-btn" onClick={addTrade}>
-                      Save Trade
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              <div className="card">
-                <h2 className="section-title">Rules Checklist</h2>
-
-                <div className="checklist">
-                  <label className="check-item">
-                    <input
-                      type="checkbox"
-                      checked={trade.h1}
-                      onChange={() => setTrade({ ...trade, h1: !trade.h1 })}
-                    />
-                    H1 direction clear
-                  </label>
-
-                  <label className="check-item">
-                    <input
-                      type="checkbox"
-                      checked={trade.flip}
-                      onChange={() => setTrade({ ...trade, flip: !trade.flip })}
-                    />
-                    Flip zone reached
-                  </label>
-
-                  <label className="check-item">
-                    <input
-                      type="checkbox"
-                      checked={trade.sweep}
-                      onChange={() => setTrade({ ...trade, sweep: !trade.sweep })}
-                    />
-                    Liquidity sweep
-                  </label>
-
-                  <label className="check-item">
-                    <input
-                      type="checkbox"
-                      checked={trade.choch}
-                      onChange={() => setTrade({ ...trade, choch: !trade.choch })}
-                    />
-                    CHoCH break
-                  </label>
-
-                  <label className="check-item">
-                    <input
-                      type="checkbox"
-                      checked={trade.retest}
-                      onChange={() => setTrade({ ...trade, retest: !trade.retest })}
-                    />
-                    Retest confirmed
-                  </label>
-
-                  <label className="check-item">
-                    <input
-                      type="checkbox"
-                      checked={trade.noChase}
-                      onChange={() =>
-                        setTrade({ ...trade, noChase: !trade.noChase })
-                      }
-                    />
-                    No no-retest entry
-                  </label>
-
-                  <label className="check-item">
-                    <input
-                      type="checkbox"
-                      checked={trade.noBigMove}
-                      onChange={() =>
-                        setTrade({ ...trade, noBigMove: !trade.noBigMove })
-                      }
-                    />
-                    No chasing big move
-                  </label>
-
-                  <label className="check-item">
-                    <input
-                      type="checkbox"
-                      checked={trade.noEmotion}
-                      onChange={() =>
-                        setTrade({ ...trade, noEmotion: !trade.noEmotion })
-                      }
-                    />
-                    No emotional trade
-                  </label>
-                </div>
-
-                <div
-                  style={{
-                    marginTop: "16px",
-                    padding: "14px",
-                    borderRadius: "12px",
-                    background: canTrade ? "#052e16" : "#450a0a",
-                    border: canTrade ? "1px solid #166534" : "1px solid #991b1b",
-                    fontWeight: "bold",
-                  }}
-                >
-                  Score: {score}/10 · {canTrade ? "Can trade" : "No trade"}
-                </div>
-              </div>
+          <div className="form-grid">
+            <div className="input-group">
+              <label className="label">Start Balance</label>
+              <input
+                className="input"
+                value={startBalance}
+                onChange={(e) => setStartBalance(e.target.value)}
+              />
             </div>
 
-            <div className="card">
-              <h2 className="section-title">Recent Trades</h2>
-
-              <div className="table-wrap">
-                <table className="table">
-                  <thead>
-                    <tr>
-                      <th>Date</th>
-                      <th>Pair</th>
-                      <th>Direction</th>
-                      <th>Entry</th>
-                      <th>SL</th>
-                      <th>TP</th>
-                      <th>Result</th>
-                      <th>P/L</th>
-                      <th>Score</th>
-                      <th>Action</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {trades.length === 0 ? (
-                      <tr>
-                        <td colSpan="10">No trades yet.</td>
-                      </tr>
-                    ) : (
-                      trades.map((t) => (
-                        <tr key={t.id}>
-                          <td>{normalizeDate(t.date)}</td>
-                          <td>{t.pair || "XAUUSD"}</td>
-                          <td>{t.direction || "-"}</td>
-                          <td>{t.entry || "-"}</td>
-                          <td>{t.sl || "-"}</td>
-                          <td>{t.tp || "-"}</td>
-                          <td>{t.result}</td>
-                          <td className={pnlClass(t.pnl)}>
-                            {Number(t.pnl) > 0 ? "+" : ""}
-                            {fmt2(t.pnl)}
-                          </td>
-                          <td>
-                            {t.score}/10 {t.allowed ? "✅" : "❌"}
-                          </td>
-                          <td>
-                            <button
-                              className="primary-btn"
-                              style={{ background: "#991b1b", padding: "8px 12px" }}
-                              onClick={() => deleteTrade(t.id)}
-                            >
-                              Delete
-                            </button>
-                          </td>
-                        </tr>
-                      ))
-                    )}
-                  </tbody>
-                </table>
-              </div>
+            <div className="input-group">
+              <label className="label">Trade Date</label>
+              <input
+                className="input"
+                type="date"
+                value={normalizeDate(trade.date)}
+                onChange={(e) =>
+                  setTrade({ ...trade, date: normalizeDate(e.target.value) })
+                }
+              />
             </div>
-          </>
-        )}
+
+            <div className="input-group">
+              <label className="label">Pair</label>
+              <input
+                className="input"
+                value={trade.pair}
+                onChange={(e) => setTrade({ ...trade, pair: e.target.value })}
+                placeholder="e.g. XAUUSD"
+              />
+            </div>
+
+            <div className="input-group">
+              <label className="label">Direction</label>
+              <select
+                className="select"
+                value={trade.direction}
+                onChange={(e) =>
+                  setTrade({ ...trade, direction: e.target.value })
+                }
+              >
+                <option>Buy</option>
+                <option>Sell</option>
+              </select>
+            </div>
+
+            <div className="input-group full">
+              <label className="label">Reason</label>
+              <input
+                className="input"
+                value={trade.reason}
+                onChange={(e) => setTrade({ ...trade, reason: e.target.value })}
+                placeholder="Write the setup reason"
+              />
+            </div>
+
+            <div className="input-group">
+              <label className="label">Entry Price</label>
+              <input
+                className="input"
+                value={trade.entry}
+                onChange={(e) => setTrade({ ...trade, entry: e.target.value })}
+                placeholder="e.g. 4624"
+              />
+            </div>
+
+            <div className="input-group">
+              <label className="label">Stop Loss</label>
+              <input
+                className="input"
+                value={trade.sl}
+                onChange={(e) => setTrade({ ...trade, sl: e.target.value })}
+                placeholder="e.g. 4630"
+              />
+            </div>
+
+            <div className="input-group">
+              <label className="label">Take Profit</label>
+              <input
+                className="input"
+                value={trade.tp}
+                onChange={(e) => setTrade({ ...trade, tp: e.target.value })}
+                placeholder="e.g. 4602"
+              />
+            </div>
+
+            <div className="input-group">
+              <label className="label">Risk %</label>
+              <input
+                className="input"
+                value={trade.risk || ""}
+                onChange={(e) => setTrade({ ...trade, risk: e.target.value })}
+                placeholder="e.g. 2"
+              />
+            </div>
+
+            <div className="input-group">
+              <label className="label">PnL</label>
+              <input
+                className="input"
+                value={trade.pnl}
+                onChange={(e) => setTrade({ ...trade, pnl: e.target.value })}
+                placeholder="e.g. 21.35"
+              />
+            </div>
+
+            <div className="input-group">
+              <label className="label">Result</label>
+              <select
+                className="select"
+                value={trade.result}
+                onChange={(e) => setTrade({ ...trade, result: e.target.value })}
+              >
+                <option>Win</option>
+                <option>Loss</option>
+                <option>BE</option>
+              </select>
+            </div>
+
+            <div className="input-group full">
+              <button className="primary-btn full-btn" onClick={addTrade}>
+                Save Trade
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div className="card">
+          <h3 className="subsection-title">Rules Checklist</h3>
+
+          <div className="checklist">
+            <label className="check-item">
+              <input
+                type="checkbox"
+                checked={trade.h1}
+                onChange={() => setTrade({ ...trade, h1: !trade.h1 })}
+              />
+              H1 direction clear
+            </label>
+
+            <label className="check-item">
+              <input
+                type="checkbox"
+                checked={trade.flip}
+                onChange={() => setTrade({ ...trade, flip: !trade.flip })}
+              />
+              Flip zone reached
+            </label>
+
+            <label className="check-item">
+              <input
+                type="checkbox"
+                checked={trade.sweep}
+                onChange={() => setTrade({ ...trade, sweep: !trade.sweep })}
+              />
+              Liquidity sweep
+            </label>
+
+            <label className="check-item">
+              <input
+                type="checkbox"
+                checked={trade.choch}
+                onChange={() => setTrade({ ...trade, choch: !trade.choch })}
+              />
+              CHoCH break
+            </label>
+
+            <label className="check-item">
+              <input
+                type="checkbox"
+                checked={trade.retest}
+                onChange={() => setTrade({ ...trade, retest: !trade.retest })}
+              />
+              Retest confirmed
+            </label>
+
+            <label className="check-item">
+              <input
+                type="checkbox"
+                checked={trade.noChase}
+                onChange={() => setTrade({ ...trade, noChase: !trade.noChase })}
+              />
+              No no-retest entry
+            </label>
+
+            <label className="check-item">
+              <input
+                type="checkbox"
+                checked={trade.noBigMove}
+                onChange={() =>
+                  setTrade({ ...trade, noBigMove: !trade.noBigMove })
+                }
+              />
+              No chasing big move
+            </label>
+
+            <label className="check-item">
+              <input
+                type="checkbox"
+                checked={trade.noEmotion}
+                onChange={() =>
+                  setTrade({ ...trade, noEmotion: !trade.noEmotion })
+                }
+              />
+              No emotional trade
+            </label>
+          </div>
+
+          <div className={`mini-status ${canTrade ? "status-ready" : "status-wait"}`}>
+            Score: {score}/10 · {canTrade ? "Can trade" : "No trade"}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {/* Section 4: Recent Trades */}
+    <div className="section-block">
+      <div className="section-header">
+        <h2 className="section-title">Recent Trades</h2>
+        <p className="section-desc">Review execution and remove mistakes fast.</p>
+      </div>
+
+      <div className="card">
+        <div className="table-wrap">
+          <table className="table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Pair</th>
+                <th>Direction</th>
+                <th>Entry</th>
+                <th>SL</th>
+                <th>TP</th>
+                <th>Result</th>
+                <th>P/L</th>
+                <th>Score</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {trades.length === 0 ? (
+                <tr>
+                  <td colSpan="10">No trades yet.</td>
+                </tr>
+              ) : (
+                trades.map((t) => (
+                  <tr key={t.id}>
+                    <td>{normalizeDate(t.date)}</td>
+                    <td>{t.pair || "XAUUSD"}</td>
+                    <td>{t.direction || "-"}</td>
+                    <td>{t.entry || "-"}</td>
+                    <td>{t.sl || "-"}</td>
+                    <td>{t.tp || "-"}</td>
+                    <td>{t.result}</td>
+                    <td className={pnlClass(t.pnl)}>
+                      {Number(t.pnl) > 0 ? "+" : ""}
+                      {fmt2(t.pnl)}
+                    </td>
+                    <td>
+                      {t.score}/10 {t.allowed ? "✅" : "❌"}
+                    </td>
+                    <td>
+                      <button
+                        className="danger-btn"
+                        onClick={() => deleteTrade(t.id)}
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </>
+)}
 
         {tab === "daily" && (
           <div className="card">
