@@ -665,76 +665,10 @@ export default function App() {
               </div>
             </div>
 
-            <div className="section-block">
-              <div className="section-header">
-                <h2 className="section-title">Recent Trades</h2>
-                <p className="section-desc">
-                  Review execution and remove mistakes fast.
-                </p>
-              </div>
-
-              <div className="card desktop-only">
-                <div className="table-wrap">
-                  <table className="table">
-                    <thead>
-                      <tr>
-                        <th>Date</th>
-                        <th>Pair</th>
-                        <th>Direction</th>
-                        <th>Entry</th>
-                        <th>SL</th>
-                        <th>TP</th>
-                        <th>Result</th>
-                        <th>P/L</th>
-                        <th>Score</th>
-                        <th>Action</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {trades.length === 0 ? (
-                        <tr>
-                          <td colSpan="10">No trades yet.</td>
-                        </tr>
-                      ) : (
-                        trades.map((t) => (
-                          <tr key={t.id}>
-                            <td>{normalizeDate(t.date)}</td>
-                            <td>{t.pair || "XAUUSD"}</td>
-                            <td>{t.direction || "-"}</td>
-                            <td>{t.entry || "-"}</td>
-                            <td>{t.sl || "-"}</td>
-                            <td>{t.tp || "-"}</td>
-                            <td>{t.result}</td>
-                            <td className={pnlClass(t.pnl)}>
-                              {Number(t.pnl) > 0 ? "+" : ""}
-                              {fmt2(t.pnl)}
-                            </td>
-                            <td>
-                              {t.score}/10 {t.allowed ? "✅" : "❌"}
-                            </td>
-                            <td>
-                              <button
-                                className="danger-btn"
-                                onClick={() => deleteTrade(t.id)}
-                              >
-                                Delete
-                              </button>
-                            </td>
-                          </tr>
-                        ))
-                      )}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-
-              <div className="mobile-only">
-                <TradeCardsMobile />
-              
-              </div>
-            </div>
+          
           </>
         )}
+
 
         {tab === "daily" && (
           <>
@@ -823,6 +757,116 @@ export default function App() {
             </div>
           </>
         )}
+        {tab === "history" && (
+  <>
+    <div className="section-block">
+      <div className="section-header">
+        <h2 className="section-title">Trade History</h2>
+        <p className="section-desc">
+          Review all recorded trades in one dedicated section.
+        </p>
+      </div>
+
+      <div className="stats-grid">
+        <div className="card">
+          <div className="stat-label">Total Trades</div>
+          <div className="stat-value">{stats.total}</div>
+        </div>
+
+        <div className="card">
+          <div className="stat-label">Wins</div>
+          <div className="stat-value positive">{stats.wins}</div>
+        </div>
+
+        <div className="card">
+          <div className="stat-label">Win Rate</div>
+          <div
+            className={`stat-value ${
+              stats.winRate > 50 ? "positive" : stats.winRate < 50 ? "negative" : ""
+            }`}
+          >
+            {stats.winRate}%
+          </div>
+        </div>
+
+        <div className="card">
+          <div className="stat-label">Total P/L</div>
+          <div className={`stat-value ${pnlClass(stats.tradePnl)}`}>
+            {stats.tradePnl > 0 ? "+" : ""}${fmt2(stats.tradePnl)}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div className="section-block">
+      <div className="section-header">
+        <h2 className="section-title">All Trades</h2>
+        <p className="section-desc">
+          Check entries, results, discipline score, and remove wrong records.
+        </p>
+      </div>
+
+      <div className="card desktop-only">
+        <div className="table-wrap">
+          <table className="table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Pair</th>
+                <th>Direction</th>
+                <th>Entry</th>
+                <th>SL</th>
+                <th>TP</th>
+                <th>Result</th>
+                <th>P/L</th>
+                <th>Score</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {trades.length === 0 ? (
+                <tr>
+                  <td colSpan="10">No trades yet.</td>
+                </tr>
+              ) : (
+                trades.map((t) => (
+                  <tr key={t.id}>
+                    <td>{normalizeDate(t.date)}</td>
+                    <td>{t.pair || "XAUUSD"}</td>
+                    <td>{t.direction || "-"}</td>
+                    <td>{t.entry || "-"}</td>
+                    <td>{t.sl || "-"}</td>
+                    <td>{t.tp || "-"}</td>
+                    <td>{t.result}</td>
+                    <td className={pnlClass(t.pnl)}>
+                      {Number(t.pnl) > 0 ? "+" : ""}
+                      {fmt2(t.pnl)}
+                    </td>
+                    <td>
+                      {t.score}/10 {t.allowed ? "✅" : "❌"}
+                    </td>
+                    <td>
+                      <button
+                        className="danger-btn"
+                        onClick={() => deleteTrade(t.id)}
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div className="mobile-only">
+        <TradeCardsMobile />
+      </div>
+    </div>
+  </>
+)}
 
         {tab === "balance" && (
           <>
@@ -996,7 +1040,7 @@ export default function App() {
           </>
         )}
       </div>
-       <div className="bottom-nav">
+     <div className="bottom-nav">
     <button
       className={tab === "trade" ? "bottom-nav-item active" : "bottom-nav-item"}
       onClick={() => setTab("trade")}
@@ -1005,12 +1049,12 @@ export default function App() {
       <small>Trade</small>
     </button>
 
-    {/* 🔥 中间突出按钮 */}
     <button
-      className="bottom-nav-center"
-      onClick={() => setTab("trade")}
+      className={tab === "history" ? "bottom-nav-item active" : "bottom-nav-item"}
+      onClick={() => setTab("history")}
     >
-      +
+      <span>🕘</span>
+      <small>History</small>
     </button>
 
     <button
