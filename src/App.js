@@ -70,6 +70,7 @@ export default function App() {
     amount: "",
     note: "",
   });
+  const [showMenu, setShowMenu] = useState(false);
 
   useEffect(() => save("startBalance", startBalance), [startBalance]);
   useEffect(() => save("trades", trades), [trades]);
@@ -338,28 +339,57 @@ export default function App() {
             </p>
           </div>
 
-          <div className="mobile-stack">
+          <div className="header-actions">
             <button className="primary-btn" onClick={() => setTab("trade")}>
               + Add Trade
             </button>
 
-            <button className="primary-btn" onClick={exportData}>
-              Export
-            </button>
+            <div className="gear-menu-wrap">
+             <button
+                className="gear-btn"
+                onClick={() => setShowMenu(!showMenu)}
+                aria-label="Open settings menu"
+              >
+      ⚙
+              </button>
 
-            <label className="primary-btn upload-btn">
-              Import
-              <input
-                type="file"
-                accept="application/json"
-                onChange={importData}
-                style={{ display: "none" }}
-              />
-            </label>
+               {showMenu && (
+                <div className="gear-dropdown">
+                  <button
+                    className="gear-menu-item"
+                    onClick={() => {
+                     exportData();
+                       setShowMenu(false);  
+                    }}
+                  >
+                    Export
+                  </button>
 
-            <button className="danger-btn" onClick={clearAll}>
-              Clear All
-            </button>
+                  <label className="gear-menu-item gear-upload">
+                    Import
+                    <input
+                      type="file"
+                      accept="application/json"
+                      onChange={(e) => {
+                        importData(e);
+                         setShowMenu(false);
+                      }}
+                       style={{ display: "none" }}
+                    />
+                  </label>
+
+                  <button
+                    className="gear-menu-item danger-text"
+                     onClick={() => {
+                      clearAll();
+                      setShowMenu(false);
+                      }}
+                   >
+                     Clear All
+                   </button>
+                 </div>
+                )}
+            </div>
           </div>
         </div>
 
