@@ -1107,97 +1107,48 @@ export default function App() {
           {showTradeModal && (
   <div className="modal-overlay" onClick={() => setShowTradeModal(false)}>
     <div
-      className="trade-modal"
+      className="bottom-sheet"
       onClick={(e) => e.stopPropagation()}
     >
-      <div className="trade-modal-header">
-        <div>
-          <h2 className="trade-modal-title">All Trade Records</h2>
-          <p className="trade-modal-subtitle">
-            View all recorded trades in vertical list format.
-          </p>
-        </div>
+      <div className="sheet-handle" />
 
-        <button
-          className="modal-close-btn"
-          onClick={() => setShowTradeModal(false)}
-        >
-          ✕
-        </button>
+      <div className="sheet-header">
+        <h2>All Trades</h2>
+        <button onClick={() => setShowTradeModal(false)}>✕</button>
       </div>
 
-      <div className="trade-modal-body">
-        {trades.length === 0 ? (
-          <div className="empty-state">No trades yet.</div>
-        ) : (
-          trades.map((t) => (
-            <div key={t.id} className="trade-modal-card">
-              <div className="trade-modal-card-top">
-                <div>
-                  <div className="trade-bot-pair">{t.pair || "XAUUSD"}</div>
-                  <div className="trade-bot-date">{normalizeDate(t.date)}</div>
-                </div>
-
-                <span
-                  className={`badge ${
-                    t.result === "Win"
-                      ? "badge-win"
-                      : t.result === "Loss"
-                      ? "badge-loss"
-                      : "badge-be"
-                  }`}
-                >
-                  {t.result}
-                </span>
-              </div>
-
-              <div className="trade-bot-line" />
-
-              <div className="trade-modal-grid">
-                <div className="trade-bot-item">
-                  <span className="trade-bot-label">Direction</span>
-                  <strong>{t.direction || "-"}</strong>
-                </div>
-
-                <div className="trade-bot-item">
-                  <span className="trade-bot-label">Entry</span>
-                  <strong>{t.entry || "-"}</strong>
-                </div>
-
-                <div className="trade-bot-item">
-                  <span className="trade-bot-label">SL / TP</span>
-                  <strong>
-                    {t.sl || "-"} / {t.tp || "-"}
-                  </strong>
-                </div>
-
-                <div className="trade-bot-item">
-                  <span className="trade-bot-label">Score</span>
-                  <strong>
-                    {t.score}/10 {t.allowed ? "✅" : "❌"}
-                  </strong>
-                </div>
-              </div>
-
-              <div className="trade-modal-footer">
-                <div>
-                  <div className="trade-bot-label">P/L</div>
-                  <div className={`trade-bot-pnl ${pnlClass(t.pnl)}`}>
-                    {Number(t.pnl) > 0 ? "+" : ""}
-                    {fmt2(t.pnl)}
-                  </div>
-                </div>
-
-                <button
-                  className="trade-bot-delete"
-                  onClick={() => deleteTrade(t.id)}
-                >
-                  Delete
-                </button>
-              </div>
+      <div className="sheet-body">
+        {trades.map((t) => (
+          <div key={t.id} className="sheet-card">
+            <div className="sheet-card-top">
+              <strong>{t.pair}</strong>
+              <span className={`badge ${t.result === "Win" ? "badge-win" : "badge-loss"}`}>
+                {t.result}
+              </span>
             </div>
-          ))
-        )}
+
+            <div className="sheet-row">
+              <span>Entry</span>
+              <span>{t.entry}</span>
+            </div>
+
+            <div className="sheet-row">
+              <span>SL / TP</span>
+              <span>{t.sl} / {t.tp}</span>
+            </div>
+
+            <div className="sheet-row">
+              <span>P/L</span>
+              <span className={pnlClass(t.pnl)}>
+                {Number(t.pnl) > 0 ? "+" : ""}{fmt2(t.pnl)}
+              </span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+)}
       </div>
     </div>
   </div>
