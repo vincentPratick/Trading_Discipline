@@ -71,7 +71,8 @@ export default function App() {
     note: "",
   });
   const [showMenu, setShowMenu] = useState(false);
-
+  const [showTradeModal, setShowTradeModal] = useState(false);
+  
   useEffect(() => save("startBalance", startBalance), [startBalance]);
   useEffect(() => save("trades", trades), [trades]);
   useEffect(() => save("cashflows", cashflows), [cashflows]);
@@ -852,12 +853,22 @@ export default function App() {
     </div>
 
     <div className="section-block">
-      <div className="section-header">
-        <h2 className="section-title">All Trades</h2>
-        <p className="section-desc">
-          Check entries, results, discipline score, and remove wrong records.
-        </p>
-      </div>
+      <div className="section-header section-header-row">
+     <div>
+       <h2 className="section-title">All Trades</h2>
+       <p className="section-desc">
+         Check entries, results, discipline score, and remove wrong records.
+    </p>
+  </div>
+
+  <button
+    className="circle-icon-btn"
+    onClick={() => setShowTradeModal(true)}
+    aria-label="View all trades"
+  >
+    ☰
+  </button>
+</div>
 
       <div className="card desktop-only">
         <div className="table-wrap">
@@ -1093,6 +1104,104 @@ export default function App() {
           </>
         )}
       </div>
+          {showTradeModal && (
+  <div className="modal-overlay" onClick={() => setShowTradeModal(false)}>
+    <div
+      className="trade-modal"
+      onClick={(e) => e.stopPropagation()}
+    >
+      <div className="trade-modal-header">
+        <div>
+          <h2 className="trade-modal-title">All Trade Records</h2>
+          <p className="trade-modal-subtitle">
+            View all recorded trades in vertical list format.
+          </p>
+        </div>
+
+        <button
+          className="modal-close-btn"
+          onClick={() => setShowTradeModal(false)}
+        >
+          ✕
+        </button>
+      </div>
+
+      <div className="trade-modal-body">
+        {trades.length === 0 ? (
+          <div className="empty-state">No trades yet.</div>
+        ) : (
+          trades.map((t) => (
+            <div key={t.id} className="trade-modal-card">
+              <div className="trade-modal-card-top">
+                <div>
+                  <div className="trade-bot-pair">{t.pair || "XAUUSD"}</div>
+                  <div className="trade-bot-date">{normalizeDate(t.date)}</div>
+                </div>
+
+                <span
+                  className={`badge ${
+                    t.result === "Win"
+                      ? "badge-win"
+                      : t.result === "Loss"
+                      ? "badge-loss"
+                      : "badge-be"
+                  }`}
+                >
+                  {t.result}
+                </span>
+              </div>
+
+              <div className="trade-bot-line" />
+
+              <div className="trade-modal-grid">
+                <div className="trade-bot-item">
+                  <span className="trade-bot-label">Direction</span>
+                  <strong>{t.direction || "-"}</strong>
+                </div>
+
+                <div className="trade-bot-item">
+                  <span className="trade-bot-label">Entry</span>
+                  <strong>{t.entry || "-"}</strong>
+                </div>
+
+                <div className="trade-bot-item">
+                  <span className="trade-bot-label">SL / TP</span>
+                  <strong>
+                    {t.sl || "-"} / {t.tp || "-"}
+                  </strong>
+                </div>
+
+                <div className="trade-bot-item">
+                  <span className="trade-bot-label">Score</span>
+                  <strong>
+                    {t.score}/10 {t.allowed ? "✅" : "❌"}
+                  </strong>
+                </div>
+              </div>
+
+              <div className="trade-modal-footer">
+                <div>
+                  <div className="trade-bot-label">P/L</div>
+                  <div className={`trade-bot-pnl ${pnlClass(t.pnl)}`}>
+                    {Number(t.pnl) > 0 ? "+" : ""}
+                    {fmt2(t.pnl)}
+                  </div>
+                </div>
+
+                <button
+                  className="trade-bot-delete"
+                  onClick={() => deleteTrade(t.id)}
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+    </div>
+  </div>
+)}
      <div className="bottom-nav">
     <button
       className={tab === "trade" ? "bottom-nav-item active" : "bottom-nav-item"}
