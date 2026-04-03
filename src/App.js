@@ -215,57 +215,80 @@ export default function App() {
   };
 
   const TradeCardsMobile = () => (
-    <div className="mobile-cards">
-      {trades.length === 0 ? (
-        <div className="empty-state">No trades yet.</div>
-      ) : (
-        trades.map((t) => (
-          <div key={t.id} className="mobile-card">
-            <div className="mobile-card-top">
-              <strong>{t.pair || "XAUUSD"}</strong>
-              <span className={`badge ${t.result === "Win" ? "badge-win" : t.result === "Loss" ? "badge-loss" : "badge-be"}`}>
-                {t.result}
-              </span>
+  <div className="trade-slider">
+    {trades.length === 0 ? (
+      <div className="empty-state">No trades yet.</div>
+    ) : (
+      trades.map((t) => (
+        <div key={t.id} className="trade-bot-card">
+          <div className="trade-bot-top">
+            <div>
+              <div className="trade-bot-pair">{t.pair || "XAUUSD"}</div>
+              <div className="trade-bot-date">{normalizeDate(t.date)}</div>
             </div>
-            <div className="mobile-card-row">
-              <span>Date</span>
-              <span>{normalizeDate(t.date)}</span>
+
+            <span
+              className={`badge ${
+                t.result === "Win"
+                  ? "badge-win"
+                  : t.result === "Loss"
+                  ? "badge-loss"
+                  : "badge-be"
+              }`}
+            >
+              {t.result}
+            </span>
+          </div>
+
+          <div className="trade-bot-line" />
+
+          <div className="trade-bot-grid">
+            <div className="trade-bot-item">
+              <span className="trade-bot-label">Entry</span>
+              <strong>{t.entry || "-"}</strong>
             </div>
-            <div className="mobile-card-row">
-              <span>Direction</span>
-              <span>{t.direction || "-"}</span>
+
+            <div className="trade-bot-item">
+              <span className="trade-bot-label">Direction</span>
+              <strong>{t.direction || "-"}</strong>
             </div>
-            <div className="mobile-card-row">
-              <span>Entry</span>
-              <span>{t.entry || "-"}</span>
-            </div>
-            <div className="mobile-card-row">
-              <span>SL / TP</span>
-              <span>
+
+            <div className="trade-bot-item">
+              <span className="trade-bot-label">SL / TP</span>
+              <strong>
                 {t.sl || "-"} / {t.tp || "-"}
-              </span>
+              </strong>
             </div>
-            <div className="mobile-card-row">
-              <span>P/L</span>
-              <span className={pnlClass(t.pnl)}>
+
+            <div className="trade-bot-item">
+              <span className="trade-bot-label">Score</span>
+              <strong>
+                {t.score}/10 {t.allowed ? "✅" : "❌"}
+              </strong>
+            </div>
+          </div>
+
+          <div className="trade-bot-footer">
+            <div>
+              <div className="trade-bot-label">P/L</div>
+              <div className={`trade-bot-pnl ${pnlClass(t.pnl)}`}>
                 {Number(t.pnl) > 0 ? "+" : ""}
                 {fmt2(t.pnl)}
-              </span>
+              </div>
             </div>
-            <div className="mobile-card-row">
-              <span>Score</span>
-              <span>
-                {t.score}/10 {t.allowed ? "✅" : "❌"}
-              </span>
-            </div>
-            <button className="danger-btn full-btn" onClick={() => deleteTrade(t.id)}>
+
+            <button
+              className="trade-bot-delete"
+              onClick={() => deleteTrade(t.id)}
+            >
               Delete
             </button>
           </div>
-        ))
-      )}
-    </div>
-  );
+        </div>
+      ))
+    )}
+  </div>
+);
 
   const CashflowCardsMobile = () => (
     <div className="mobile-cards">
